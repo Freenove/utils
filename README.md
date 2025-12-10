@@ -13,7 +13,7 @@ The specific modifications are as follows:
 8. Added [ws2812_demo.py](file://e:\GitHub\utils\python\ws2812_demo.py), [pwm_demo.py](file://e:\GitHub\utils\python\pwm_demo.py) and [servo_demo.py](file://e:\GitHub\utils\python\servo_demo.py) in `utils/python` to test the freenove_ws2812, freenove_pwm, and freenove_servo libraries
 
 # Usage
-1. Clone the repository: `cd ~ && git clone https://github.com/Zhentao-Lin/utils.git`
+1. Clone the repository: `cd ~ && git clone https://github.com/Freenove/utils.git`
 2. Install build tools, compile the code to generate shared libraries, and install the shared libraries to the Raspberry Pi 5 directory: `cd utils/python/ && sudo python setup.py`
 3. Test: 
 * Navigate to the python directory: `cd ~/utils/python`
