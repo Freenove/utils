@@ -21,6 +21,18 @@ The specific modifications are as follows:
 * Test PWM driver: `python pwm_demo.py`
 * Test servo driver: `python servo_demo.py`
 
+# How to customize Python libraries
+1. Enter the examples directory: `cd ~/utils/python/examples`
+2. Refer to the code in the directory and write your own code.
+3. Modify the [CMakeLists.txt](file://e:\GitHub\utils\CMakeLists.txt) file and add your written code to the [CMakeLists.txt](file://e:\GitHub\utils\CMakeLists.txt) file.
+4. Use cmake to create a build folder and load compilation files: `cmake -B build -S`
+5. Enter the build folder and compile: `cd build && make`
+6. Run the test file: `./xxx`
+7. Install the library to the shared folder: `sudo make install`. After executing this command, the `libxxx.so` file will be automatically installed to `/usr/local/lib/`.
+8. Enter the python directory: `cd ~/utils/python`
+9. Write code to call the shared library based on Python's `ctypes` module. You can refer to the `piolib_xxx.py` files for this step.
+10. Write test files and test: `python xxx_demo.py`. You can refer to the `xxx_demo.py` files for this step.
+
 # utils
 A collection of scripts and simple applications
 
@@ -47,12 +59,3 @@ A collection of scripts and simple applications
 * [vclog](vclog/) - A tool to get VideoCore 'assert' or 'msg' logs
     with optional -f to wait for new logs to arrive.
 
-
-**Build Instructions**
-
-Install the prerequisites with "sudo apt install cmake device-tree-compiler libfdt-dev libgnutls28-dev" - you need at least version 3.10 of cmake. Run the following commands to build and install everything, or see the README files in the subdirectories to just build utilities individually:
-
- - *cmake .*
-    N.B. Use *cmake -DBUILD_SHARED_LIBS=1 .* to build the libraries in the subprojects (libdtovl, gpiolib and piolib) as shared (as opposed to static) libraries.
- - *make*
- - *sudo make install*
