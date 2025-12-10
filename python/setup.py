@@ -50,7 +50,7 @@ def main():
             print("Repository directory already exists, skipping clone step")
         else:
             # Clone with retry mechanism
-            success = clone_with_retry("https://github.com/Zhentao-Lin/utils.git")
+            success = clone_with_retry("https://github.com/Freenove/utils.git")
             if not success:
                 raise Exception("Failed to clone repository after multiple attempts")
 
