@@ -5,14 +5,14 @@
 #include <stdlib.h>
 
 #define GPIO_PIN 18
-#define LED_NUMBER 256
+#define LED_NUMBER 8
 
 static ws2812_instance_t* led_strip = NULL;
 
 void signal_handler(int sig) {
     printf("\nReceived signal %d, cleaning up...\n", sig);
     if (led_strip) {
-        ws2812_deinit(led_strip);
+        stop(led_strip);
     }
     exit(0);
 }
@@ -21,40 +21,62 @@ int main() {
     signal(SIGINT, signal_handler);
     signal(SIGTERM, signal_handler);
 
-    led_strip = ws2812_init(GPIO_PIN, LED_NUMBER, LED_TYPE_GRB);
+    led_strip = begin(GPIO_PIN, LED_NUMBER);
     if (!led_strip) {
         printf("Failed to initialize\n");
         return -1;
     }
     
+    printf("Red LED\n");
     for (int i = 0; i < LED_NUMBER; i++) {
-        ws2812_set_pixel_color(led_strip, i, 0xff0000);
-        ws2812_show(led_strip);
-        usleep(1000);
+        setPixelColor(led_strip, i, 0, 255, 0);
+        show(led_strip);
+        usleep(100000);
     }
 
+    printf("Green LED\n");
     for (int i = 0; i < LED_NUMBER; i++) {
-        ws2812_set_pixel_color(led_strip, i, 0x00ff00);
-        ws2812_show(led_strip);
-        usleep(1000);
+        setPixelColor(led_strip, i, 255, 0, 0);
+        show(led_strip);
+        usleep(100000);
     }
     
+    printf("Blue LED\n");
     for (int i = 0; i < LED_NUMBER; i++) {
-        ws2812_set_pixel_color(led_strip, i, 0x0000ff);
-        ws2812_show(led_strip);
-        usleep(1000);
+        setPixelColor(led_strip, i, 0, 0, 255);
+        show(led_strip);
+        usleep(100000);
     }
 
+    printf("Rainbow LED\n");
     for(int j = 0; j < 255; j++) {
         for (int i = 0; i < LED_NUMBER; i++) {
-            uint32_t color = ws2812_color_wheel(led_strip, (i * 256 / LED_NUMBER + j) & 255);
-            ws2812_set_pixel_color(led_strip, i, color);
+            uint32_t color = wheel((i * 256 / LED_NUMBER + j) & 255);
+            uint8_t r = (color >> 16) & 255;
+            uint8_t g = (color >> 8) & 255;
+            uint8_t b = color & 255;
+            setPixelColor(led_strip, i, r, g, b);
         }
-        ws2812_show(led_strip);
+        show(led_strip);
         usleep(10000);
     }
-    
-    ws2812_deinit(led_strip);
+
+    printf("Breathing LED\n");
+    for(int i=0; i<LED_NUMBER; i++){
+        setPixelColor(led_strip, i, 0, 0, 255);
+    }
+    for(int i=0; i<255; i++){
+        setBrightness(led_strip, i);
+        show(led_strip);
+        usleep(10000);
+    }
+    for(int i=255; i>=0; i--){
+        setBrightness(led_strip, i);
+        show(led_strip);
+        usleep(10000);
+    }
+
+    stop(led_strip);
     printf("Done\n");
     return 0;
 }

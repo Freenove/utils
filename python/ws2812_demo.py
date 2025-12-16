@@ -3,7 +3,7 @@
 import time
 import signal
 import sys
-from piolib_ws2812 import WS2812, LedType
+from piolib_ws2812 import WS2812
 
 def rainbow_cycle(strip, wait_ms=50):
     """
@@ -14,16 +14,18 @@ def rainbow_cycle(strip, wait_ms=50):
         wait_ms: Delay time (milliseconds)
     """
     for j in range(256):
-        for i in range(strip.get_led_count()):
-            rgb_values = strip.wheel((i * 256 // strip.get_led_count() + j) & 255)
-            strip.set_led_color_data(i, rgb_values[0], rgb_values[1], rgb_values[2])
+        for i in range(strip.numPixels()):
+            color = strip.wheel((i * 256 // strip.numPixels() + j) & 255)
+            strip.setPixelColor(i, color)
         strip.show()
         time.sleep(wait_ms / 1000.0)
 
 # Signal handler function for graceful exit
 def signal_handler(sig, frame):
     print('\nShutting down program...')
-    strip.deinit()
+    if 'strip' in globals():
+        strip.clear()
+        strip.deinit()
     sys.exit(0)
 
 # Register signal handler
@@ -37,17 +39,16 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         gpio_pin = int(sys.argv[1])  # First argument as GPIO pin
     if len(sys.argv) > 2:
-        gpio_pin = int(sys.argv[1])  # First argument as GPIO pin
         num_leds = int(sys.argv[2])  # Second argument as LED count
         
     # Create WS2812 object
     try:
-        strip = WS2812(gpio_pin=gpio_pin, num_leds=num_leds, led_type=LedType.LED_TYPE_GRB)
+        strip = WS2812(led_pin=gpio_pin, led_count=num_leds, order="GRB")
         print(f"WS2812 initialization successful (GPIO: {gpio_pin}, LED count: {num_leds})")
         print("Press Ctrl+C to exit program")
         
         # Set brightness (optional)
-        strip.set_led_brightness(100)  # Set brightness to about 40%
+        strip.setBrightness(100)  # Set brightness to about 40%
         
         # Loop to display rainbow effect
         while True:
